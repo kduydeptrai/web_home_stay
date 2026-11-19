@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>HMB Agency | Portfolio Quản lý Homestay</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* =========================================
+       BIẾN MÀU SẮC & CÀI ĐẶT CHUNG
+       ========================================= */
+    :root {
+      --bg-color: #fbfbf9;
+      --surface-color: #ffffff;
+      --text-main: #1a2b22;
+      --text-muted: #5e6b65;
+      --accent: #2d5a46; /* Xanh rêu đậm */
+      --accent-light: #e8f0ec;
+      --accent-gold: #b89b6a; /* Vàng đồng */
+      --border-color: #e6e8e3;
+      --shadow-sm: 0 4px 20px rgba(26, 43, 34, 0.04);
+      --shadow-md: 0 12px 32px -8px rgba(26, 43, 34, 0.12);
+      --shadow-lg: 0 24px 48px -12px rgba(26, 43, 34, 0.18);
+      --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    section.content-section {
+      padding: 60px 40px;
+    }
+
+    /* =========================================
+       NAVIGATION
+       ========================================= */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 40px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(251, 251, 249, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: var(--transition);
+    }
+
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      cursor: pointer;
+      z-index: 102;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand span { 
+      color: var(--accent-gold); 
+      font-weight: 400; 
+      font-style: italic;
+    }
+
+    .nav-menu { 
+      display: flex; 
+      gap: 40px; 
+      font-size: 14px; 
+      font-weight: 500; 
+      letter-spacing: 0.5px; 
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--text-muted);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-menu a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: var(--transition);
+    }
+
+    .nav-menu a:hover, .nav-menu a.active { 
+      color: var(--text-main); 
+    }
+    
+    .nav-menu a:hover::after, .nav-menu a.active::after {
+      width: 100%;
+    }
+
+    .nav-contact { 
+      font-size: 14px; 
+      color: var(--accent); 
+      font-weight: 600; 
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Hamburger Button */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      z-index: 102;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 28px;
+      height: 2px;
+      background: var(--text-main);
+      transition: var(--transition);
+      border-radius: 2px;
+    }
+
+    /* =========================================
+       MOBILE POPUP MENU (GLASSMORPHISM)
+       ========================================= */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 43, 34, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .menu-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .popup-menu {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -45%) scale(0.95);
+      width: 85vw;
+      max-width: 400px;
+      height: auto;
+      min-height: 50vh;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 24px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1001;
+      
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      padding: 40px 20px;
+    }
+
+    .popup-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .close-popup {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 18px;
+      transition: var(--transition);
+    }
+
+    .close-popup:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+      transform: rotate(90deg);
+    }
+
+    .popup-menu a {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .popup-menu a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--accent-gold);
+      transition: var(--transition);
+    }
+
+    .popup-menu a:hover {
+      color: var(--accent);
+    }
+    
+    .popup-menu a:hover::after {
+      width: 100%;
+    }
+
+    .popup-menu .m-contact {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 24px;
+      text-align: center;
+      line-height: 1.8;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      width: 80%;
+    }
+
+    .popup-menu .m-contact a {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+    }
+    .popup-menu .m-contact a::after { display: none; }
+
+    /* =========================================
+       PAGE TRANSITION
+       ========================================= */
+    .page {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .page.active {
+      display: block;
+      opacity: 1;
+      animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================
+       HERO / INTRO SECTION
+       ========================================= */
+    .intro {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 80px;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Hiệu ứng nền mờ (Blur blobs) */
+    .intro::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      width: 300px;
+      height: 300px;
+      background: var(--accent-light);
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.7;
+    }
+
+    .intro-text .eyebrow {
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      font-weight: 600;
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+
+    .intro-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      color: var(--text-main);
+      margin-bottom: 28px;
+    }
+
+    .intro-text h1 em { 
+      font-style: italic; 
+      color: var(--accent); 
+    }
+
+    .intro-text p { 
+      font-size: 1.1rem; 
+      color: var(--text-muted); 
+      max-width: 500px; 
+      margin-bottom: 40px; 
+      line-height: 1.8;
+    }
+
+    .intro-meta { 
+      display: flex; 
+      gap: 48px; 
+      border-top: 1px solid var(--border-color); 
+      padding-top: 32px; 
+    }
+
+    .intro-meta div strong {
+      display: block;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      font-family: 'Playfair Display', serif;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .intro-meta div span { 
+      font-size: 13px; 
+      color: var(--text-muted); 
+      letter-spacing: 0.5px; 
+      font-weight: 500;
+    }
+
+    .intro-visual {
+      border-radius: 24px;
+      height: 560px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .intro-visual img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      display: block; 
+      transition: transform 1.2s ease;
+    }
+    
+    .intro-visual:hover img {
+      transform: scale(1.03);
+    }
+
+    /* =========================================
+       SECTION LABEL
+       ========================================= */
+    .section-label { 
+      display: flex; 
+      align-items: center; 
+      gap: 24px; 
+      margin-bottom: 48px; 
+    }
+
+    .section-label h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      letter-spacing: -0.5px;
+    }
+
+    .section-label .line { 
+      flex: 1; 
+      height: 1px; 
+      background: var(--border-color); 
+    }
+    
+    .section-label .count { 
+      font-size: 13px; 
+      color: var(--text-muted); 
+      font-weight: 500; 
+      letter-spacing: 1px;
+      white-space: nowrap; 
+    }
+
+    /* =========================================
+       PORTFOLIO CARDS
+       ========================================= */
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 40px; 
+    }
+
+    .card {
+      background: var(--surface-color);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid transparent;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-8px);
+      border-color: var(--accent-light);
+    }
+
+    .card-img { 
+      height: 280px; 
+      overflow: hidden; 
+      position: relative; 
+    }
+
+    .card-img img {
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover;
+      transition: transform 0.8s ease;
+    }
+
+    .card:hover .card-img img { 
+      transform: scale(1.08); 
+    }
+
+    /* Gradient overlay cho ảnh */
+    .card-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.2) 0%, transparent 40%);
+      opacity: 0;
+      transition: var(--transition);
+    }
+    
+    .card:hover .card-img::after { opacity: 1; }
+
+    .card-img .badge {
+      position: absolute;
+      top: 20px; 
+      left: 20px;
+      font-size: 11px; 
+      letter-spacing: 1.5px; 
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      padding: 6px 14px;
+      border-radius: 30px;
+      color: var(--text-main);
+      font-weight: 600;
+      z-index: 2;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .card-body { 
+      padding: 28px; 
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; 
+      font-weight: 600;
+      color: var(--text-main); 
+      margin-bottom: 8px;
+    }
+
+    .card-body .loc {
+      font-size: 13px; 
+      color: var(--text-muted); 
+      margin-bottom: 20px;
+      display: flex; 
+      align-items: center; 
+      gap: 8px;
+    }
+
+    .card-body .loc i { 
+      color: var(--accent-gold); 
+      font-size: 14px;
+    }
+
+    .card-body .desc {
+      font-size: 14px; 
+      color: var(--text-muted); 
+      line-height: 1.7;
+      margin-bottom: 24px; 
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      flex: 1;
+    }
+
+    .card-body .stats { 
+      display: flex; 
+      justify-content: space-between; 
+      font-size: 13px; 
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    
+    .card-body .stats strong { 
+      color: var(--accent); 
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* =========================================
+       DETAIL PAGE
+       ========================================= */
+    .detail-hero {
+      height: 560px;
+      overflow: hidden;
+      position: relative;
+      border-radius: 24px;
+      margin-top: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .detail-hero img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      display: block; 
+    }
+
+    .detail-hero .overlay {
+      position: absolute; 
+      inset: 0;
+      background: linear-gradient(to top, rgba(15, 26, 20, 0.8) 0%, transparent 60%);
+      display: flex; 
+      align-items: flex-end;
+      padding: 60px;
+    }
+
+    .detail-hero .overlay h1 {
+      font-family: 'Playfair Display', serif;
+      color: #ffffff; 
+      font-size: 3.5rem;
+      font-weight: 600; 
+      letter-spacing: -1px;
+      line-height: 1.1;
+    }
+
+    .detail-hero .overlay .detail-loc {
+      color: #d4dcc9; 
+      font-size: 15px;
+      margin-top: 12px; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px;
+    }
+    
+    .detail-hero .overlay .detail-loc i {
+      color: var(--accent-gold);
+    }
+
+    .detail-content {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 80px;
+      padding: 64px 0 100px;
+    }
+
+    .detail-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem; 
+      font-weight: 600;
+      color: var(--text-main); 
+      margin-bottom: 20px;
+      margin-top: 40px;
+    }
+
+    .detail-content h2:first-child { margin-top: 0; }
+
+    .detail-content p { 
+      font-size: 15px; 
+      color: var(--text-muted); 
+      margin-bottom: 20px; 
+      line-height: 1.8;
+    }
+
+    .detail-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .detail-gallery img {
+      width: 100%; 
+      height: 240px; 
+      object-fit: cover;
+      border-radius: 12px; 
+      display: block;
+      transition: var(--transition);
+    }
+    
+    .detail-gallery img:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-md);
+    }
+
+    .detail-sidebar {
+      border-left: 1px solid var(--border-color);
+      padding-left: 48px;
+      height: fit-content;
+      position: sticky;
+      top: 120px;
+    }
+
+    .sidebar-block { margin-bottom: 48px; }
+
+    .sidebar-block h4 {
+      font-size: 12px; 
+      letter-spacing: 2px;
+      text-transform: uppercase; 
+      color: var(--text-main);
+      font-weight: 700; 
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .sidebar-block h4::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+    }
+
+    .sidebar-block .info-row {
+      display: flex; 
+      justify-content: space-between;
+      font-size: 14px; 
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar-block .info-row span:first-child { color: var(--text-muted); }
+    .sidebar-block .info-row span:last-child { color: var(--text-main); font-weight: 600; }
+
+    .back-link {
+      display: inline-flex; 
+      align-items: center; 
+      gap: 10px;
+      font-size: 14px; 
+      color: var(--text-muted);
+      text-decoration: none; 
+      font-weight: 500;
+      margin-bottom: 24px; 
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .back-link:hover { 
+      color: var(--accent); 
+      transform: translateX(-4px);
+    }
+
+    /* =========================================
+       PROCESS SECTION
+       ========================================= */
+    .process-grid {
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px; 
+      margin-top: 24px;
+    }
+
+    .step { position: relative; }
+    
+    /* Đường nối giữa các bước */
+    .step::after {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 60px;
+      width: calc(100% + 40px - 60px);
+      height: 1px;
+      background: var(--border-color);
+      z-index: -1;
+    }
+    
+    .step:last-child::after { display: none; }
+
+    .step .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem; 
+      color: var(--accent-gold);
+      font-weight: 700; 
+      line-height: 1; 
+      margin-bottom: 20px;
+      background: var(--bg-color);
+      display: inline-block;
+      padding-right: 16px;
+    }
+
+    .step h4 { 
+      font-size: 16px; 
+      font-weight: 600; 
+      color: var(--text-main); 
+      margin-bottom: 12px; 
+    }
+    
+    .step p { 
+      font-size: 14px; 
+      color: var(--text-muted); 
+      line-height: 1.7; 
+    }
+
+    /* =========================================
+       ABOUT SECTION
+       ========================================= */
+    .about {
+      display: grid; 
+      grid-template-columns: 1fr 1fr;
+      gap: 80px; 
+      align-items: center;
+    }
+
+    .about h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem; 
+      font-weight: 600;
+      color: var(--text-main); 
+      margin-bottom: 24px;
+    }
+
+    .about p { 
+      font-size: 15px; 
+      color: var(--text-muted); 
+      margin-bottom: 20px; 
+      line-height: 1.8;
+    }
+
+    .about .values { 
+      margin-top: 40px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 24px; 
+    }
+
+    .value { 
+      display: flex; 
+      gap: 20px; 
+      align-items: flex-start; 
+    }
+    
+    .value i { 
+      color: var(--accent-gold); 
+      font-size: 20px; 
+      margin-top: 4px; 
+      background: var(--accent-light);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    
+    .value div strong { 
+      display: block; 
+      font-size: 16px; 
+      color: var(--text-main); 
+      margin-bottom: 4px; 
+    }
+    
+    .value div span { 
+      font-size: 14px; 
+      color: var(--text-muted); 
+      line-height: 1.6;
+    }
+
+    .about-visual { 
+      border-radius: 24px; 
+      overflow: hidden; 
+      height: 600px; 
+      box-shadow: var(--shadow-md);
+    }
+    
+    .about-visual img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      display: block; 
+    }
+
+    /* =========================================
+       CONTACT SECTION
+       ========================================= */
+    .contact {
+      display: grid; 
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+
+    .contact h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem; 
+      font-weight: 600;
+      color: var(--text-main); 
+      margin-bottom: 20px;
+    }
+
+    .contact p { 
+      font-size: 15px; 
+      color: var(--text-muted); 
+      margin-bottom: 40px; 
+      max-width: 400px; 
+      line-height: 1.8;
+    }
+
+    .contact-info { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 24px; 
+      font-size: 15px; 
+      color: var(--text-main); 
+    }
+    
+    .contact-info div { 
+      display: flex; 
+      align-items: center; 
+      gap: 16px; 
+    }
+    
+    .contact-info i { 
+      color: var(--accent); 
+      font-size: 18px; 
+      width: 40px;
+      height: 40px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    
+    .contact-info a { 
+      color: var(--text-main); 
+      text-decoration: none; 
+      transition: var(--transition); 
+      font-weight: 500;
+    }
+    
+    .contact-info a:hover { 
+      color: var(--accent); 
+    }
+
+    .contact-form { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 20px; 
+      background: var(--surface-color);
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .contact-form input, .contact-form textarea {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; 
+      padding: 16px 20px;
+      border: 1px solid var(--border-color); 
+      border-radius: 8px;
+      background: var(--bg-color); 
+      color: var(--text-main);
+      outline: none; 
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .contact-form input:focus, .contact-form textarea:focus { 
+      border-color: var(--accent); 
+      background: #ffffff;
+      box-shadow: 0 0 0 4px var(--accent-light);
+    }
+    
+    .contact-form textarea { 
+      min-height: 140px; 
+      resize: vertical; 
+    }
+
+    .contact-form button {
+      align-self: flex-start;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px; 
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 16px 40px;
+      background: var(--accent); 
+      color: #ffffff;
+      border: none; 
+      border-radius: 50px;
+      cursor: pointer; 
+      transition: var(--transition);
+      margin-top: 8px;
+    }
+
+    .contact-form button:hover { 
+      background: #1e4030; 
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(45, 90, 70, 0.3);
+    }
+
+    /* =========================================
+       FOOTER
+       ========================================= */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px;
+      display: flex; 
+      justify-content: space-between;
+      align-items: center; 
+      font-size: 14px; 
+      color: var(--text-muted);
+      background: var(--surface-color);
+    }
+
+    footer .socials { display: flex; gap: 16px; }
+    
+    footer .socials a { 
+      color: var(--text-muted); 
+      font-size: 16px; 
+      transition: var(--transition); 
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--bg-color);
+    }
+    
+    footer .socials a:hover { 
+      color: #ffffff; 
+      background: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    /* =========================================
+       RESPONSIVE
+       ========================================= */
+    @media (max-width: 1024px) {
+      section.content-section { padding: 48px 32px; }
+      nav { padding: 20px 32px; }
+      footer { padding: 32px; }
+      
+      .intro { gap: 40px; }
+      .intro-text h1 { font-size: 3.2rem; }
+      .intro-visual { height: 440px; }
+      
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+      
+      .process-grid { grid-template-columns: repeat(2, 1fr); gap: 48px; }
+      .step::after { display: none; } /* Ẩn đường nối trên tablet */
+      
+      .about { gap: 48px; }
+      .about-visual { height: 480px; }
+      
+      .contact { gap: 48px; }
+      
+      .detail-content { grid-template-columns: 1fr; gap: 48px; padding: 48px 0 64px; }
+      .detail-sidebar { 
+        border-left: none; 
+        padding-left: 0; 
+        border-top: 1px solid var(--border-color); 
+        padding-top: 40px; 
+        position: static; 
+      }
+      .detail-hero { height: 400px; }
+      .detail-hero .overlay { padding: 40px; }
+      .detail-hero .overlay h1 { font-size: 2.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      section.content-section { padding: 32px 24px; }
+      nav { padding: 16px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; gap: 20px; text-align: center; }
+      
+      .nav-menu { display: none; }
+      .nav-contact { display: none; }
+      .hamburger { display: flex; }
+      
+      .intro { grid-template-columns: 1fr; gap: 40px; }
+      .intro-text h1 { font-size: 2.6rem; letter-spacing: -1px; }
+      .intro-visual { height: 320px; border-radius: 16px; }
+      .intro-meta { gap: 32px; }
+      .intro-meta div strong { font-size: 1.8rem; }
+      
+      .section-label h2 { font-size: 1.8rem; white-space: normal; }
+      .grid { grid-template-columns: 1fr; gap: 24px; }
+      
+      .card-img { height: 240px; }
+      
+      .detail-hero { height: 320px; border-radius: 16px; margin-top: 16px; }
+      .detail-hero .overlay { padding: 24px; }
+      .detail-hero .overlay h1 { font-size: 2rem; }
+      .detail-gallery { grid-template-columns: 1fr; }
+      .detail-gallery img { height: 200px; }
+      
+      .process-grid { grid-template-columns: 1fr; gap: 32px; }
+      .step .step-num { font-size: 2.2rem; }
+      
+      .about { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { height: 320px; border-radius: 16px; }
+      
+      .contact { grid-template-columns: 1fr; gap: 40px; }
+      .contact-form { padding: 24px; }
+      .contact-form button { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      section.content-section { padding: 24px 20px; }
+      nav { padding: 16px 20px; }
+      footer { padding: 24px 20px; }
+      
+      .intro-text h1 { font-size: 2.2rem; }
+      .intro-meta { gap: 24px; flex-wrap: wrap; }
+      
+      .popup-menu { width: 90vw; padding: 32px 16px; }
+      .popup-menu a { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <nav>
+      <div class="brand" onclick="goTo('home')">HMB <span>Agency</span></div>
+      <div class="nav-menu">
+        <a data-page="home" onclick="goTo('home')" class="active">Trang chủ</a>
+        <a data-page="portfolio" onclick="goTo('portfolio')">Dự án</a>
+        <a data-page="process" onclick="goTo('process')">Quy trình</a>
+        <a data-page="about" onclick="goTo('about')">Giới thiệu</a>
+        <a data-page="contact" onclick="goTo('contact')">Liên hệ</a>
+      </div>
+      <div class="nav-contact">
+        <i class="fas fa-phone-alt"></i> 0855 555 140
+      </div>
+      <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Popup Menu & Overlay -->
+  <div class="menu-overlay" id="menu-overlay" onclick="closeMobileMenu()"></div>
+  
+  <div class="popup-menu" id="mobile-menu">
+    <button class="close-popup" onclick="closeMobileMenu()" aria-label="Đóng menu">
+      <i class="fas fa-times"></i>
+    </button>
+    
+    <a onclick="goTo('home'); closeMobileMenu();">Trang chủ</a>
+    <a onclick="goTo('portfolio'); closeMobileMenu();">Dự án</a>
+    <a onclick="goTo('process'); closeMobileMenu();">Quy trình</a>
+    <a onclick="goTo('about'); closeMobileMenu();">Giới thiệu</a>
+    <a onclick="goTo('contact'); closeMobileMenu();">Liên hệ</a>
+    
+    <div class="m-contact">
+      <a href="tel:0855555140"><i class="fas fa-phone-alt"></i> 0855 555 140</a><br>
+      <a href="mailto:hmb.agency.group@gmail.com"><i class="fas fa-envelope"></i> hmb.agency.group@gmail.com</a>
+    </div>
+  </div>
+
+  <!-- ============ PAGE: HOME ============ -->
+  <div class="page active" id="page-home">
+    <section class="content-section">
+      <div class="intro">
+        <div class="intro-text">
+          <div class="eyebrow">Portfolio · Quản lý homestay</div>
+          <h1>Chúng tôi giữ cho những <em>ngôi nhà</em> luôn đong đầy trải nghiệm.</h1>
+          <p>HMB Agency là đơn vị quản lý homestay độc lập, đồng hành cùng chủ nhà tại Đà Lạt, Hội An và Phú Quốc từ năm 2019.</p>
+          <div class="intro-meta">
+            <div><strong>24</strong><span>Homestay đã vận hành</span></div>
+            <div><strong>6</strong><span>Năm hoạt động</span></div>
+            <div><strong>3</strong><span>Thành phố</span></div>
+          </div>
+        </div>
+        <div class="intro-visual">
+          <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80" alt="Homestay view núi">
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-label">
+        <h2>Dự án tiêu biểu</h2>
+        <div class="line"></div>
+        <div class="count">03 / 24 dự án</div>
+      </div>
+      <div class="grid" id="home-grid"></div>
+    </section>
+  </div>
+
+  <!-- ============ PAGE: PORTFOLIO ============ -->
+  <div class="page" id="page-portfolio">
+    <section class="content-section">
+      <div class="section-label">
+        <h2>Tất cả dự án</h2>
+        <div class="line"></div>
+        <div class="count" id="portfolio-count">06 dự án</div>
+      </div>
+      <div class="grid" id="portfolio-grid"></div>
+    </section>
+  </div>
+
+  <!-- ============ PAGE: DETAIL ============ -->
+  <div class="page" id="page-detail">
+    <section class="content-section">
+      <div id="detail-container"></div>
+    </section>
+  </div>
+
+  <!-- ============ PAGE: PROCESS ============ -->
+  <div class="page" id="page-process">
+    <section class="content-section">
+      <div class="section-label">
+        <h2>Cách chúng tôi vận hành</h2>
+        <div class="line"></div>
+      </div>
+      <div class="process-grid">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h4>Khảo sát &amp; định vị</h4>
+          <p>Đánh giá hiện trạng homestay, xác định tệp khách và mức giá phù hợp.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h4>Chuẩn hóa vận hành</h4>
+          <p>Xây dựng quy trình buồng phòng, check-in, chăm sóc khách và xử lý sự cố.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h4>Phân phối &amp; marketing</h4>
+          <p>Đưa homestay lên các kênh OTA, tối ưu nội dung và hình ảnh niêm yết.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <h4>Báo cáo &amp; đồng hành</h4>
+          <p>Báo cáo doanh thu minh bạch hàng tháng, họp định kỳ cùng chủ nhà.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ PAGE: ABOUT ============ -->
+  <div class="page" id="page-about">
+    <section class="content-section">
+      <div class="about">
+        <div>
+          <h2>Về HMB Agency</h2>
+          <p>HMB Agency bắt đầu từ một homestay nhỏ ở Đà Lạt năm 2019, rồi dần mở rộng thành agency quản lý độc lập cho các chủ nhà không có thời gian vận hành hàng ngày.</p>
+          <p>Đội ngũ gồm 12 người, phụ trách buồng phòng, đặt phòng, marketing và chăm sóc khách. Mỗi homestay đều có một người phụ trách chính, liên lạc trực tiếp với chủ nhà.</p>
+          <div class="values">
+            <div class="value">
+              <i class="fas fa-feather-alt"></i>
+              <div>
+                <strong>Giữ cá tính riêng</strong>
+                <span>Không biến homestay thành chuỗi vô hồn – mỗi nơi giữ một câu chuyện.</span>
+              </div>
+            </div>
+            <div class="value">
+              <i class="fas fa-hand-holding-heart"></i>
+              <div>
+                <strong>Minh bạch &amp; tận tâm</strong>
+                <span>Báo cáo rõ ràng, chi phí rõ ràng, chủ nhà luôn biết điều gì đang diễn ra.</span>
+              </div>
+            </div>
+            <div class="value">
+              <i class="fas fa-seedling"></i>
+              <div>
+                <strong>Vận hành bền vững</strong>
+                <span>Ưu tiên hạn chế rác thải, tiết kiệm năng lượng và tôn trọng cộng đồng địa phương.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Không gian homestay">
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ PAGE: CONTACT ============ -->
+  <div class="page" id="page-contact">
+    <section class="content-section">
+      <div class="contact">
+        <div>
+          <h2>Liên hệ hợp tác</h2>
+          <p>Nếu bạn có một homestay cần người quản lý, hoặc muốn trao đổi về dự án, hãy để lại lời nhắn.</p>
+          <div class="contact-info">
+            <div><i class="fas fa-envelope"></i> <a href="mailto:hmb.agency.group@gmail.com">hmb.agency.group@gmail.com</a></div>
+            <div><i class="fas fa-phone-alt"></i> <a href="tel:0855555140">0855 555 140</a></div>
+            <div><i class="fas fa-map-marker-alt"></i> 27 Trần Phú, Đà Lạt, Lâm Đồng</div>
+          </div>
+        </div>
+        <form class="contact-form" onsubmit="event.preventDefault(); alert('Cảm ơn bạn! HMB Agency sẽ phản hồi trong 1–2 ngày làm việc.');">
+          <input type="text" placeholder="Tên của bạn" required>
+          <input type="email" placeholder="Email liên hệ" required>
+          <textarea placeholder="Bạn muốn trao đổi điều gì?" required></textarea>
+          <button type="submit">Gửi lời nhắn</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="container">
+    <footer>
+      <div>© 2025 HMB Agency · Quản lý homestay</div>
+      <div class="socials">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ==================== POPUP MENU LOGIC ====================
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('menu-overlay');
+      
+      if (menu.classList.contains('show')) {
+        closeMobileMenu();
+      } else {
+        menu.classList.add('show');
+        overlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('mobile-menu').classList.remove('show');
+      document.getElementById('menu-overlay').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    // ==================== DATA ====================
+    const projects = [
+      {
+        id: 'may-lang-thang',
+        name: 'Mây Lang Thang',
+        city: 'Đà Lạt',
+        location: 'Phường 8, Đà Lạt',
+        desc: 'Homestay gỗ 6 phòng view thung lũng, vận hành từ 2021. Tối ưu công suất mùa cao điểm.',
+        capacity: '92%',
+        rooms: '6 phòng',
+        year: 2021,
+        cover: 'https://images.unsplash.com/photo-1587061949409-02df41d5e562?auto=format&fit=crop&w=1200&q=80',
+        gallery: [
+          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
+        ],
+        story: 'Mây Lang Thang là dự án đầu tiên chúng tôi nhận quản lý trọn gói. Homestay nằm trên sườn đồi nhìn xuống thung lũng, được xây dựng từ gỗ thông địa phương. Đội ngũ HMB Agency đảm nhận từ khâu đặt phòng, buồng phòng đến chăm sóc khách hàng, giúp chủ nhà – một kiến trúc sư bận rộn – hoàn toàn yên tâm.',
+        highlights: ['View thung lũng', 'Kiến trúc gỗ thông', 'Tệp khách cặp đôi & gia đình nhỏ']
+      },
+      {
+        id: 'song-hoai-boutique',
+        name: 'Sông Hoài Boutique',
+        city: 'Hội An',
+        location: 'Phố cổ, Hội An',
+        desc: 'Nhà cổ cải tạo 4 phòng, giữ kiến trúc truyền thống. Quản lý đặt phòng đa kênh.',
+        capacity: '88%',
+        rooms: '4 phòng',
+        year: 2020,
+        cover: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80',
+        gallery: [
+          'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'
+        ],
+        story: 'Sông Hoài Boutique là một nhà cổ hơn 80 năm tuổi được cải tạo thành homestay 4 phòng, giữ nguyên kết cấu gỗ và sân trong. Chúng tôi phụ trách vận hành hàng ngày, đồng thời tư vấn chủ nhà về cách khai thác giá trị di sản mà không làm mất đi nét truyền thống.',
+        highlights: ['Nhà cổ 80 năm', 'Sân trong truyền thống', 'Khách quốc tế yêu văn hóa']
+      },
+      {
+        id: 'bai-sao-bungalow',
+        name: 'Bãi Sao Bungalow',
+        city: 'Phú Quốc',
+        location: 'Bãi Sao, Phú Quốc',
+        desc: 'Cụm 8 bungalow sát biển, vận hành trọn gói từ buồng phòng đến đón khách.',
+        capacity: '95%',
+        rooms: '8 bungalow',
+        year: 2022,
+        cover: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80',
+        gallery: [
+          'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=800&q=80'
+        ],
+        story: 'Bãi Sao Bungalow là dự án quy mô nhất chúng tôi từng vận hành: 8 bungalow sát biển, mỗi căn có hiên riêng nhìn ra bãi cát trắng. HMB Agency đảm nhận toàn bộ từ đặt phòng, đón khách, buồng phòng đến các tour trải nghiệm địa phương, đạt công suất trung bình 95% trong mùa cao điểm.',
+        highlights: ['Sát biển Bãi Sao', '8 bungalow độc lập', 'Dịch vụ trọn gói']
+      },
+      {
+        id: 'pho-co-hideaway',
+        name: 'Phố Cổ Hideaway',
+        city: 'Hà Nội',
+        location: 'Hoàn Kiếm, Hà Nội',
+        desc: 'Căn hộ 3 phòng trong ngõ nhỏ phố cổ, hướng đến khách quốc tế lưu trú dài ngày.',
+        capacity: '90%',
+        rooms: '3 phòng',
+        year: 2023,
+        cover: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+        gallery: [
+          'https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80'
+        ],
+        story: 'Phố Cổ Hideaway nằm trong một ngõ nhỏ yên tĩnh giữa lòng phố cổ Hà Nội. Chủ nhà là một gia đình sống ở tầng dưới, muốn cho thuê 3 phòng tầng trên cho khách quốc tế. HMB Agency phụ trách đặt phòng, dọn dẹp và hỗ trợ khách trong suốt thời gian lưu trú, giữ không khí ấm cúng như ở nhà.',
+        highlights: ['Ngõ nhỏ phố cổ', 'Khách lưu trú dài ngày', 'Gia đình địa phương đồng hành']
+      },
+      {
+        id: 'doi-thong-nho',
+        name: 'Đồi Thông Nhỏ',
+        city: 'Đà Lạt',
+        location: 'Trại Mát, Đà Lạt',
+        desc: 'Homestay vườn 5 phòng, thiết kế tối giản, tập khách gia đình và nhóm bạn.',
+        capacity: '85%',
+        rooms: '5 phòng',
+        year: 2022,
+        cover: 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1200&q=80',
+        gallery: [
+          'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=800&q=80'
+        ],
+        story: 'Đồi Thông Nhỏ nằm ở Trại Mát, cách trung tâm Đà Lạt khoảng 10km, được bao quanh bởi vườn rau và rừng thông. Homestay có 5 phòng thiết kế tối giản, phù hợp cho gia đình và nhóm bạn muốn tách khỏi phố thị. Chúng tôi đảm nhận vận hành từ năm 2022, tập trung vào trải nghiệm yên tĩnh và gần gũi thiên nhiên.',
+        highlights: ['Vườn rau & rừng thông', 'Thiết kế tối giản', 'Không gian yên tĩnh']
+      },
+      {
+        id: 'reu-xanh-house',
+        name: 'Rêu Xanh House',
+        city: 'Hội An',
+        location: 'Cẩm Kim, Hội An',
+        desc: 'Nhà vườn 4 phòng bên sông Thu Bồn, khai thác từ 2023, tập khách trải nghiệm.',
+        capacity: '87%',
+        rooms: '4 phòng',
+        year: 2023,
+        cover: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80',
+        gallery: [
+          'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=800&q=80'
+        ],
+        story: 'Rêu Xanh House nằm ở Cẩm Kim, bên kia sông Thu Bồn nhìn về phố cổ. Đây là nhà vườn của một gia đình làm nông, được cải tạo thành 4 phòng nghỉ từ năm 2023. HMB Agency phụ trách đặt phòng và marketing, giúp homestay tiếp cận tệp khách muốn trải nghiệm cuộc sống làng quê Hội An.',
+        highlights: ['Bên sông Thu Bồn', 'Nhà vườn địa phương', 'Trải nghiệm làng quê']
+      }
+    ];
+
+    // ==================== RENDER CARDS ====================
+    function cardHTML(p) {
+      return `
+        <div class="card" onclick="goTo('detail', '${p.id}')">
+          <div class="card-img">
+            <img src="${p.cover}" alt="${p.name}" loading="lazy">
+            <span class="badge">${p.city}</span>
+          </div>
+          <div class="card-body">
+            <h3>${p.name}</h3>
+            <div class="loc"><i class="fas fa-map-pin"></i> ${p.location}</div>
+            <div class="desc">${p.desc}</div>
+            <div class="stats">
+              <span>Công suất <strong>${p.capacity}</strong></span>
+              <span>${p.rooms}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderGrids() {
+      document.getElementById('home-grid').innerHTML = projects.slice(0, 3).map(p => cardHTML(p)).join('');
+      document.getElementById('portfolio-grid').innerHTML = projects.map(p => cardHTML(p)).join('');
+      document.getElementById('portfolio-count').textContent = String(projects.length).padStart(2, '0') + ' dự án';
+    }
+
+    // ==================== RENDER DETAIL ====================
+    function renderDetail(id) {
+      const p = projects.find(x => x.id === id);
+      if (!p) return;
+
+      const container = document.getElementById('detail-container');
+      container.innerHTML = `
+        <a class="back-link" onclick="goTo('portfolio')"><i class="fas fa-arrow-left"></i> Quay lại danh sách dự án</a>
+        <div class="detail-hero">
+          <img src="${p.cover}" alt="${p.name}">
+          <div class="overlay">
+            <div>
+              <h1>${p.name}</h1>
+              <div class="detail-loc"><i class="fas fa-map-pin"></i> ${p.location}</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-content">
+          <div>
+            <h2>Câu chuyện dự án</h2>
+            <p>${p.story}</p>
+            <h2>Điểm nổi bật</h2>
+            <div class="values" style="margin-top: 16px;">
+              ${p.highlights.map(h => `
+                <div class="value">
+                  <i class="fas fa-check-circle"></i>
+                  <div><span style="font-size: 15px; color: var(--text-muted);">${h}</span></div>
+                </div>
+              `).join('')}
+            </div>
+            <h2>Hình ảnh</h2>
+            <div class="detail-gallery">
+              ${p.gallery.map(img => `<img src="${img}" alt="${p.name}" loading="lazy">`).join('')}
+            </div>
+          </div>
+          <div class="detail-sidebar">
+            <div class="sidebar-block">
+              <h4>Thông tin dự án</h4>
+              <div class="info-row"><span>Thành phố</span><span>${p.city}</span></div>
+              <div class="info-row"><span>Quy mô</span><span>${p.rooms}</span></div>
+              <div class="info-row"><span>Công suất</span><span>${p.capacity}</span></div>
+              <div class="info-row"><span>Năm vận hành</span><span>${p.year}</span></div>
+            </div>
+            <div class="sidebar-block">
+              <h4>Liên hệ</h4>
+              <p style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">Muốn biết thêm về dự án này hoặc homestay tương tự? Gửi lời nhắn cho HMB Agency.</p>
+              <a class="back-link" style="margin-top: 16px; color: var(--accent);" onclick="goTo('contact')">Gửi lời nhắn <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==================== SPA ROUTER ====================
+    function goTo(page, param) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+      const target = document.getElementById('page-' + page);
+      if (target) target.classList.add('active');
+
+      if (page === 'detail' && param) {
+        renderDetail(param);
+      }
+
+      const navPage = page === 'detail' ? 'portfolio' : page;
+      document.querySelectorAll('.nav-menu a').forEach(a => {
+        a.classList.toggle('active', a.dataset.page === navPage);
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (page === 'detail' && param) {
+        history.pushState({ page, param }, '', '#duan/' + param);
+      } else {
+        history.pushState({ page }, '', '#' + page);
+      }
+    }
+
+    window.addEventListener('popstate', (e) => {
+      const state = e.state || { page: 'home' };
+      goTo(state.page, state.param);
+    });
+
+    function initFromHash() {
+      const hash = window.location.hash.replace('#', '');
+      if (hash.startsWith('duan/')) {
+        const id = hash.split('/')[1];
+        goTo('detail', id);
+      } else if (hash && document.getElementById('page-' + hash)) {
+        goTo(hash);
+      } else {
+        goTo('home');
+      }
+    }
+
+    // ==================== INIT ====================
+    renderGrids();
+    initFromHash();
+  </script>
+
+</body>
+</html>
